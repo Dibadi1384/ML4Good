@@ -316,6 +316,105 @@ async def transcribe(
         return TranscribeResponse(transcript=raw.strip(), translation="")
 
 
+PRACTICE_SCENARIOS = {
+    "doctor":        "a doctor at a hospital",
+    "grocery":       "a grocery store cashier",
+    "job_interview": "a hiring manager conducting a job interview",
+    "restaurant":    "a waiter at a restaurant",
+    "pharmacy":      "a pharmacist at a pharmacy",
+}
+
+
+class PracticeStartRequest(BaseModel):
+    scenario: str
+
+
+class PracticeStartResponse(BaseModel):
+    message: str
+
+
+class PracticeTurn(BaseModel):
+    role: Literal["ai", "user"]
+    message: str
+
+
+class PracticeChatRequest(BaseModel):
+    scenario: str
+    history: List[PracticeTurn]
+    user_message: str
+
+
+class PracticeChatResponse(BaseModel):
+    message: str
+
+
+class PracticeCheckRequest(BaseModel):
+    target: str
+    attempt: str
+
+
+class PracticeCheckResponse(BaseModel):
+    understood: bool
+    feedback: str
+
+
+@app.post("/api/practice/start", response_model=PracticeStartResponse)
+async def practice_start(req: PracticeStartRequest) -> PracticeStartResponse:
+    role = PRACTICE_SCENARIOS.get(req.scenario, f"someone in a {req.scenario} situation")
+    prompt = (
+        f"You are {role}. A Rohingya person who is learning English has just approached you.\n\n"
+        "Start the conversation by:\n"
+        "1. Briefly stating your role (e.g. 'I am a doctor at this hospital.')\n"
+        "2. Asking a simple, natural opening question.\n\n"
+        "Rules:\n"
+        "- Keep it to 1-2 sentences total.\n"
+        "- Use simple, clear English.\n"
+        "- Output ONLY your opening line, no extra text."
+    )
+    message = await call_gemini(prompt)
+    return PracticeStartResponse(message=message.strip())
+
+
+@app.post("/api/practice/chat", response_model=PracticeChatResponse)
+async def practice_chat(req: PracticeChatRequest) -> PracticeChatResponse:
+    role = PRACTICE_SCENARIOS.get(req.scenario, f"someone in a {req.scenario} situation")
+    history_text = "\n".join(
+        f"{'You (AI)' if t.role == 'ai' else 'Learner'}: {t.message}"
+        for t in req.history[-10:]
+    )
+    prompt = (
+        f"You are {role} having a conversation with a Rohingya person learning English.\n\n"
+        f"Conversation so far:\n{history_text}\n"
+        f"Learner: {req.user_message}\n\n"
+        "Respond naturally as your character. Keep it simple (1-2 sentences). "
+        "Output ONLY your response."
+    )
+    message = await call_gemini(prompt)
+    return PracticeChatResponse(message=message.strip())
+
+
+@app.post("/api/practice/check", response_model=PracticeCheckResponse)
+async def practice_check(req: PracticeCheckRequest) -> PracticeCheckResponse:
+    prompt = (
+        "A language learner is trying to express a specific meaning in English.\n\n"
+        f"Intended meaning: \"{req.target}\"\n"
+        f"What the learner said: \"{req.attempt}\"\n\n"
+        "Did they communicate the same general meaning? Be lenient — small grammar mistakes are fine, "
+        "focus on whether the core meaning is conveyed.\n\n"
+        "Return ONLY valid JSON:\n"
+        '{"understood": true/false, "feedback": "one short encouraging sentence"}'
+    )
+    raw = await call_gemini(prompt)
+    try:
+        parsed = _extract_json(raw)
+        return PracticeCheckResponse(
+            understood=bool(parsed.get("understood", False)),
+            feedback=str(parsed.get("feedback", "Keep trying!")).strip(),
+        )
+    except Exception:
+        return PracticeCheckResponse(understood=False, feedback="Keep trying!")
+
+
 if __name__ == "__main__":
     import uvicorn
 

@@ -556,6 +556,327 @@
     .error-text {
       color: var(--danger);
     }
+
+    /* ====== Practice Panel ====== */
+    .practice-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 1000;
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      color: #0b1120;
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      letter-spacing: 0.04em;
+    }
+    .practice-fab:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(168, 85, 247, 0.55);
+    }
+
+    .practice-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 1001;
+      backdrop-filter: blur(2px);
+    }
+    .practice-overlay.open { display: block; }
+
+    .practice-panel {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 400px;
+      height: 100vh;
+      z-index: 1002;
+      background: linear-gradient(160deg, #0f172a 0%, #020617 100%);
+      border-left: 1px solid rgba(148, 163, 184, 0.18);
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: -24px 0 60px rgba(0, 0, 0, 0.6);
+    }
+    .practice-panel.open { right: 0; }
+
+    .prac-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      flex-shrink: 0;
+    }
+    .prac-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .prac-title-badge {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(168, 85, 247, 0.18);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      color: #d8b4fe;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .prac-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .prac-close:hover { color: #e5e7eb; border-color: rgba(148, 163, 184, 0.5); }
+
+    /* Scenario picker */
+    .scenario-picker {
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .scenario-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+    .scenario-bubbles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .scenario-bubble {
+      padding: 8px 15px;
+      border-radius: 999px;
+      border: 1px solid rgba(96, 165, 250, 0.45);
+      background: rgba(37, 99, 235, 0.08);
+      color: #bfdbfe;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .scenario-bubble:hover {
+      background: rgba(37, 99, 235, 0.22);
+      border-color: rgba(96, 165, 250, 0.8);
+      color: #e0f2fe;
+      transform: translateY(-1px);
+    }
+
+    /* Chat area */
+    .practice-chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .prac-topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+      flex-shrink: 0;
+      font-size: 11px;
+    }
+    .prac-back {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 11px;
+      cursor: pointer;
+      padding: 0;
+      white-space: nowrap;
+    }
+    .prac-back:hover { color: #e5e7eb; }
+    .prac-scenario-label {
+      font-size: 11px;
+      color: #e2e8f0;
+      font-weight: 600;
+      flex: 1;
+      text-align: center;
+      text-transform: capitalize;
+    }
+    .prac-speed-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .prac-speed-row input[type=range] {
+      width: 60px;
+      accent-color: #38bdf8;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .chat-bubble {
+      max-width: 88%;
+      padding: 8px 11px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .chat-bubble.ai {
+      align-self: flex-start;
+      background: rgba(37, 99, 235, 0.13);
+      border: 1px solid rgba(96, 165, 250, 0.28);
+      color: #e0f2fe;
+      border-bottom-left-radius: 4px;
+    }
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: rgba(168, 85, 247, 0.13);
+      border: 1px solid rgba(168, 85, 247, 0.28);
+      color: #e9d5ff;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-bubble.system {
+      align-self: center;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px dashed rgba(148, 163, 184, 0.25);
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+      max-width: 96%;
+      white-space: pre-wrap;
+    }
+    .bubble-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 3px;
+      opacity: 0.6;
+    }
+
+    /* Input bar */
+    .prac-ai-row {
+      padding: 6px 14px;
+      display: flex;
+      justify-content: center;
+    }
+    .prac-ai-btn {
+      padding: 7px 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(96, 165, 250, 0.4);
+      background: rgba(37, 99, 235, 0.12);
+      color: #bfdbfe;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .prac-ai-btn:hover { background: rgba(37, 99, 235, 0.25); border-color: rgba(96, 165, 250, 0.7); }
+
+    .prac-status {
+      font-size: 11px;
+      color: #94a3b8;
+      text-align: center;
+      min-height: 16px;
+      padding: 0 14px;
+    }
+
+    .prac-input-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 12px 16px 16px;
+      border-top: 1px solid rgba(148, 163, 184, 0.1);
+      flex-shrink: 0;
+    }
+    .prac-icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .prac-icon-btn:hover { border-color: rgba(148, 163, 184, 0.6); background: rgba(15, 23, 42, 0.98); }
+    .prac-icon-btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+
+    .prac-mic-btn {
+      width: 58px;
+      height: 58px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+      transition: all 0.15s ease;
+    }
+    .prac-mic-btn:hover { filter: brightness(1.1); transform: scale(1.05); }
+    .prac-mic-btn.recording {
+      background: linear-gradient(135deg, #f97373, #dc2626);
+      box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+      animation: mic-pulse 1s ease infinite;
+    }
+    .prac-mic-btn[disabled] { opacity: 0.38; cursor: not-allowed; }
+    @keyframes mic-pulse {
+      0%, 100% { box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5); }
+      50%       { box-shadow: 0 6px 30px rgba(220, 38, 38, 0.8); }
+    }
+    .speaking-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 2px;
+    }
+    .speaking-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #60a5fa;
+      animation: dot-bounce 1.2s ease-in-out infinite;
+    }
+    .speaking-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .speaking-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dot-bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+      40%            { transform: translateY(-6px); opacity: 1; }
+    }
+    .chat-bubble.ai.speaking {
+      border-color: rgba(96, 165, 250, 0.6);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
+    }
   </style>
 </head>
 <body>
@@ -716,6 +1037,70 @@
         border:1px solid rgba(148,163,184,0.5);background:rgba(15,23,42,0.9);
         color:#e2e8f0;cursor:pointer;display:none;">■ Stop test</button>
     </div>
+  </div>
+</div>
+
+<!-- Practice FAB -->
+<button class="practice-fab" id="practiceFab">✦ Practice</button>
+
+<!-- Practice overlay -->
+<div class="practice-overlay" id="practiceOverlay"></div>
+
+<!-- Practice panel -->
+<div class="practice-panel" id="practicePanel">
+
+  <div class="prac-header">
+    <div class="prac-title">
+      Practice Mode
+      <span class="prac-title-badge">Beta</span>
+    </div>
+    <button class="prac-close" id="practiceCloseBtn">✕</button>
+  </div>
+
+  <!-- Scenario picker -->
+  <div class="scenario-picker" id="scenarioPicker">
+    <div class="scenario-label">Choose a scenario to practice</div>
+    <div class="scenario-bubbles">
+      <div class="scenario-bubble" data-scenario="doctor">🏥 Doctor Visit</div>
+      <div class="scenario-bubble" data-scenario="grocery">🛒 Grocery Store</div>
+      <div class="scenario-bubble" data-scenario="job_interview">💼 Job Interview</div>
+      <div class="scenario-bubble" data-scenario="restaurant">🍽 Restaurant</div>
+      <div class="scenario-bubble" data-scenario="pharmacy">💊 Pharmacy</div>
+    </div>
+  </div>
+
+  <!-- Chat view -->
+  <div class="practice-chat" id="practiceChat" style="display:none;">
+
+    <!-- Top bar -->
+    <div class="prac-topbar">
+      <button class="prac-back" id="pracBackBtn">← Back</button>
+      <span class="prac-scenario-label" id="pracScenarioLabel"></span>
+      <div class="prac-speed-row">
+        🔊
+        <input type="range" id="practiceSpeedSlider" min="0.5" max="2" step="0.1" value="1" />
+        <span id="practiceSpeedLabel">1.0×</span>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <!-- AI respond (shown when waiting) -->
+    <div class="prac-ai-row" id="pracAIRow" style="display:none;">
+      <button class="prac-ai-btn" id="pracAIRespondBtn">▶ AI respond</button>
+    </div>
+
+    <!-- Status -->
+    <div class="prac-status" id="pracStatus"></div>
+
+    <!-- Input bar -->
+    <div class="prac-input-bar">
+      <button class="prac-icon-btn" id="pracHelpBtn" title="What did AI say in Rohingya?">🔤</button>
+      <button class="prac-mic-btn" id="pracMicBtn">🎙</button>
+      <button class="prac-icon-btn" id="pracSpeakRoBtn" title="Help me say it (speak Rohingya)">🤝</button>
+    </div>
+
   </div>
 </div>
 
@@ -1129,7 +1514,289 @@
   clearSuggestions();
   checkBackendHealth();
   dbg("page loaded — waiting for mic");
+
+  // ====== Practice Panel ======
+  const practiceFab         = document.getElementById("practiceFab");
+  const practiceOverlay     = document.getElementById("practiceOverlay");
+  const practicePanelEl     = document.getElementById("practicePanel");
+  const practiceCloseBtn    = document.getElementById("practiceCloseBtn");
+  const scenarioPickerEl    = document.getElementById("scenarioPicker");
+  const practiceChatEl      = document.getElementById("practiceChat");
+  const chatMessagesEl      = document.getElementById("chatMessages");
+  const pracHelpBtn         = document.getElementById("pracHelpBtn");
+  const pracAIRespondBtn    = document.getElementById("pracAIRespondBtn");
+  const pracAIRow           = document.getElementById("pracAIRow");
+  const pracMicBtn          = document.getElementById("pracMicBtn");
+  const pracSpeakRoBtn      = document.getElementById("pracSpeakRoBtn");
+  const pracStatusEl        = document.getElementById("pracStatus");
+  const pracBackBtn         = document.getElementById("pracBackBtn");
+  const pracScenarioLabel   = document.getElementById("pracScenarioLabel");
+  const practiceSpeedSlider = document.getElementById("practiceSpeedSlider");
+  const practiceSpeedLabel  = document.getElementById("practiceSpeedLabel");
+
+  let practiceScenario   = null;
+  let practiceHistory    = [];
+  let lastAIMessage      = "";
+  let pendingCoachPhrase = null;
+  let pracIsRecording    = false;
+  let pracRecorder       = null;
+  let pracChunks         = [];
+  let pracStream         = null;
+  let enSpeechRate       = 1.0;
+  let pracMicMode        = "english"; // "english" or "rohingya"
+
+  practiceSpeedSlider.addEventListener("input", () => {
+    enSpeechRate = parseFloat(practiceSpeedSlider.value);
+    practiceSpeedLabel.textContent = enSpeechRate.toFixed(1) + "×";
+  });
+
+  function openPracticePanel()  { practicePanelEl.classList.add("open"); practiceOverlay.classList.add("open"); }
+  function closePracticePanel() { practicePanelEl.classList.remove("open"); practiceOverlay.classList.remove("open"); }
+  practiceFab.addEventListener("click", openPracticePanel);
+  practiceCloseBtn.addEventListener("click", closePracticePanel);
+  practiceOverlay.addEventListener("click", closePracticePanel);
+
+  pracBackBtn.addEventListener("click", () => {
+    practiceChatEl.style.display   = "none";
+    scenarioPickerEl.style.display = "flex";
+    practiceScenario = null; practiceHistory = []; lastAIMessage = ""; pendingCoachPhrase = null;
+  });
+
+  // TTS — cancel then speak after short delay to avoid Chrome killing it
+  function speakEN(text) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    setTimeout(() => {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US";
+      u.rate = enSpeechRate;
+      window.speechSynthesis.speak(u);
+    }, 150);
+  }
+
+  function addAIBubble(text) {
+    const wrap = document.createElement("div");
+    wrap.className = "chat-bubble ai";
+    wrap.style.cssText = "display:flex;align-items:flex-start;gap:8px;";
+    const body = document.createElement("div");
+    body.textContent = text;
+    body.style.flex = "1";
+    const btn = document.createElement("button");
+    btn.textContent = "🔊";
+    btn.style.cssText = "background:none;border:none;cursor:pointer;font-size:15px;padding:2px;flex-shrink:0;";
+    btn.addEventListener("click", () => speakEN(text));
+    wrap.appendChild(body);
+    wrap.appendChild(btn);
+    chatMessagesEl.appendChild(wrap);
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+  }
+
+  function addBubble(role, text) {
+    const wrap = document.createElement("div");
+    wrap.className = "chat-bubble " + role;
+    wrap.textContent = text;
+    chatMessagesEl.appendChild(wrap);
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+  }
+
+  function setPracStatus(msg) { pracStatusEl.textContent = msg; }
+  function setInputsDisabled(v) { pracMicBtn.disabled = v; pracSpeakRoBtn.disabled = v; pracHelpBtn.disabled = v; }
+
+  // ---- Scenario selection ----
+  document.querySelectorAll(".scenario-bubble").forEach(b => {
+    b.addEventListener("click", async () => {
+      practiceScenario = b.dataset.scenario;
+      practiceHistory = []; lastAIMessage = ""; pendingCoachPhrase = null;
+      chatMessagesEl.innerHTML = "";
+      pracAIRow.style.display = "none";
+      scenarioPickerEl.style.display = "none";
+      practiceChatEl.style.display   = "flex";
+      pracScenarioLabel.textContent  = b.textContent;
+      setInputsDisabled(true);
+      setPracStatus("Starting…");
+      try {
+        const res  = await fetch(BACKEND_BASE + "/api/practice/start", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ scenario: practiceScenario }),
+        });
+        const data = await res.json();
+        lastAIMessage = data.message;
+        practiceHistory.push({ role: "ai", message: lastAIMessage });
+        addAIBubble(lastAIMessage);
+        setPracStatus("Tap 🔊 to hear · 🎙 to speak · 🤝 for Rohingya help");
+        setInputsDisabled(false);
+      } catch (err) {
+        setPracStatus("Error — is the backend running?");
+        setInputsDisabled(false);
+      }
+    });
+  });
+
+  // ---- Help button: translate AI's last message to Rohingya ----
+  pracHelpBtn.addEventListener("click", async () => {
+    if (!lastAIMessage) return;
+    pracHelpBtn.disabled = true;
+    setPracStatus("Translating…");
+    try {
+      const res  = await fetch(BACKEND_BASE + "/api/translate", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: lastAIMessage, mode: "english" }),
+      });
+      const data = await res.json();
+      addBubble("system", "🔤 " + (data.translation || ""));
+      setPracStatus("Tap 🔊 on any message to hear it.");
+    } catch (_) { setPracStatus("Translation failed."); }
+    pracHelpBtn.disabled = false;
+  });
+
+  // ---- AI respond button ----
+  pracAIRespondBtn.addEventListener("click", async () => {
+    pracAIRow.style.display = "none";
+    setInputsDisabled(true);
+    setPracStatus("AI is thinking…");
+    try {
+      const lastUser = [...practiceHistory].reverse().find(t => t.role === "user");
+      const res  = await fetch(BACKEND_BASE + "/api/practice/chat", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          scenario: practiceScenario,
+          history:  practiceHistory.slice(-10),
+          user_message: lastUser ? lastUser.message : "",
+        }),
+      });
+      const data = await res.json();
+      lastAIMessage = data.message;
+      practiceHistory.push({ role: "ai", message: lastAIMessage });
+      addAIBubble(lastAIMessage);
+      setPracStatus("Tap 🔊 to hear · 🎙 to speak");
+    } catch (_) { setPracStatus("Error getting AI response."); }
+    setInputsDisabled(false);
+  });
+
+  // ---- Audio recording helpers ----
+  async function pracStartRec() {
+    try { pracStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false }); }
+    catch (err) { setPracStatus("Mic blocked: " + err.message); return false; }
+    const mime = ["audio/webm;codecs=opus","audio/webm","audio/ogg;codecs=opus","audio/ogg"]
+      .find(t => MediaRecorder.isTypeSupported(t)) || "";
+    pracRecorder = new MediaRecorder(pracStream, mime ? { mimeType: mime } : {});
+    pracChunks   = [];
+    pracRecorder.ondataavailable = e => { if (e.data && e.data.size > 0) pracChunks.push(e.data); };
+    pracRecorder.start(250);
+    pracIsRecording = true;
+    return true;
+  }
+
+  function pracStopRec() {
+    return new Promise(resolve => {
+      pracRecorder.onstop = () => {
+        const blob = new Blob(pracChunks, { type: pracRecorder.mimeType || "audio/webm" });
+        pracChunks = [];
+        if (pracStream) { pracStream.getTracks().forEach(t => t.stop()); pracStream = null; }
+        resolve(blob);
+      };
+      try { pracRecorder.stop(); } catch (_) { resolve(null); }
+      pracIsRecording = false;
+    });
+  }
+
+  async function pracTranscribe(blob, mode) {
+    const form = new FormData();
+    form.append("file", blob, "rec.webm");
+    form.append("mode", mode);
+    const res = await fetch(BACKEND_BASE + "/api/transcribe", { method: "POST", body: form });
+    if (!res.ok) throw new Error("Transcribe " + res.status);
+    return res.json();
+  }
+
+  // ---- Main mic button (English) ----
+  pracMicBtn.addEventListener("click", async () => {
+    if (pracIsRecording && pracMicMode === "english") {
+      pracMicBtn.classList.remove("recording");
+      pracMicBtn.textContent = "⏳";
+      pracMicBtn.disabled = true;
+      const blob = await pracStopRec();
+      if (!blob || blob.size < 1000) {
+        setPracStatus("Too short — try again.");
+        pracMicBtn.textContent = "🎙"; pracMicBtn.disabled = false; return;
+      }
+      setPracStatus("Processing…");
+      try {
+        const data = await pracTranscribe(blob, "english");
+        const transcript = (data.transcript || "").trim();
+        if (!transcript) { setPracStatus("Couldn't hear — try again."); pracMicBtn.textContent = "🎙"; pracMicBtn.disabled = false; return; }
+        addBubble("user", transcript);
+        if (pendingCoachPhrase) {
+          setPracStatus("Checking…");
+          const chk = await fetch(BACKEND_BASE + "/api/practice/check", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ target: pendingCoachPhrase, attempt: transcript }),
+          });
+          const chkData = await chk.json();
+          if (chkData.understood) {
+            practiceHistory.push({ role: "user", message: pendingCoachPhrase });
+            pendingCoachPhrase = null;
+            addBubble("system", "✓ " + (chkData.feedback || "Great!"));
+            setPracStatus("Well done! Click ▶ AI respond when ready.");
+            pracAIRow.style.display = "flex";
+          } else {
+            addBubble("system", "✗ " + (chkData.feedback || "Try again.") + ' — say: "' + pendingCoachPhrase + '"');
+            setPracStatus("Try again.");
+          }
+        } else {
+          practiceHistory.push({ role: "user", message: transcript });
+          setPracStatus("Click ▶ AI respond when ready.");
+          pracAIRow.style.display = "flex";
+        }
+      } catch (err) { setPracStatus("Error: " + err.message); }
+      pracMicBtn.textContent = "🎙"; pracMicBtn.disabled = false;
+      pracSpeakRoBtn.disabled = false;
+    } else if (!pracIsRecording) {
+      pracMicMode = "english";
+      const ok = await pracStartRec();
+      if (ok) {
+        pracMicBtn.textContent = "⏹";
+        pracMicBtn.classList.add("recording");
+        pracSpeakRoBtn.disabled = true;
+        setPracStatus("Recording… tap ⏹ to stop");
+      }
+    }
+  });
+
+  // ---- Rohingya help button (speak Rohingya → get coached English) ----
+  pracSpeakRoBtn.addEventListener("click", async () => {
+    if (pracIsRecording && pracMicMode === "rohingya") {
+      pracSpeakRoBtn.textContent = "⏳";
+      pracSpeakRoBtn.disabled = true;
+      const blob = await pracStopRec();
+      if (!blob || blob.size < 1000) {
+        setPracStatus("Too short — try again.");
+        pracSpeakRoBtn.textContent = "🤝"; pracSpeakRoBtn.disabled = false; return;
+      }
+      setPracStatus("Understanding Rohingya…");
+      try {
+        const data    = await pracTranscribe(blob, "rohingya");
+        const english = (data.translation || "").trim();
+        if (!english) { setPracStatus("Couldn't understand — try again."); pracSpeakRoBtn.textContent = "🤝"; pracSpeakRoBtn.disabled = false; return; }
+        pendingCoachPhrase = english;
+        addBubble("system", '💬 In English, say: "' + english + '"');
+        speakEN(english);
+        setPracStatus("Now say it in English — tap 🎙");
+      } catch (err) { setPracStatus("Error: " + err.message); }
+      pracSpeakRoBtn.textContent = "🤝"; pracSpeakRoBtn.disabled = false;
+      pracMicBtn.disabled = false;
+    } else if (!pracIsRecording) {
+      pracMicMode = "rohingya";
+      const ok = await pracStartRec();
+      if (ok) {
+        pracSpeakRoBtn.textContent = "⏹";
+        pracMicBtn.disabled = true;
+        setPracStatus("Recording Rohingya… tap ⏹ to stop");
+      }
+    }
+  });
 </script>
+
 </body>
 </html>
 
