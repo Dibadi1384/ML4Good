@@ -27,11 +27,12 @@ if not GEMINI_API_KEY:
 
 class TranslateRequest(BaseModel):
     text: str
-    mode: Literal["english", "rohingya"]
+    mode: Literal["english", "rohingya", "auto"] = "auto"
 
 
 class TranslateResponse(BaseModel):
     translation: str
+    detected_lang: Literal["english", "rohingya"] | None = None
 
 
 class ConversationTurn(BaseModel):
@@ -57,6 +58,7 @@ class SuggestResponse(BaseModel):
 class TranscribeResponse(BaseModel):
     transcript: str
     translation: str
+    detected_lang: Literal["english", "rohingya"] | None = None
 
 
 app = FastAPI(title="English ↔ Rohingya Demo Backend")
@@ -123,7 +125,17 @@ async def translate(req: TranslateRequest) -> TranslateResponse:
     if not text:
         raise HTTPException(status_code=400, detail="Text must not be empty.")
 
-    if req.mode == "english":
+    if req.mode == "auto":
+        prompt = (
+            "You are assisting with live conversation between an English speaker and a Rohingya speaker.\n\n"
+            "Task: The following text may be in English OR in Rohingya (Latin script / Roman letters).\n"
+            "1. Identify which language it is (english or rohingya).\n"
+            "2. Translate it into the OTHER language (English → Rohingya in Latin script, or Rohingya → English).\n\n"
+            "Return ONLY valid JSON — no explanation, no markdown:\n"
+            '{"translation": "...", "detected_lang": "english" or "rohingya"}\n\n'
+            f"Text:\n\"{text}\""
+        )
+    elif req.mode == "english":
         prompt = (
             "You are assisting with live conversation between an English speaker and a Rohingya speaker.\n\n"
             "Task: Translate the following English sentence into Rohingya, but write it ONLY in Latin script "
@@ -146,6 +158,16 @@ async def translate(req: TranslateRequest) -> TranslateResponse:
         )
 
     raw = await call_gemini(prompt)
+    if req.mode == "auto":
+        try:
+            parsed = _extract_json(raw)
+            trans = str(parsed.get("translation", "")).strip().strip("'\"`")
+            det = (parsed.get("detected_lang") or "").strip().lower()
+            detected_lang = det if det in ("english", "rohingya") else None
+            return TranslateResponse(translation=trans, detected_lang=detected_lang)
+        except Exception:
+            cleaned = raw.replace("```", "").strip().strip("'\"`")
+            return TranslateResponse(translation=cleaned, detected_lang=None)
     cleaned = raw.replace("```", "").strip().strip("'\"`")
     return TranslateResponse(translation=cleaned)
 
@@ -279,10 +301,95 @@ def _extract_json(raw: str) -> dict:
     return json.loads(text)
 
 
+async def call_gemini_image(image_bytes: bytes, mime_type: str, prompt: str) -> str:
+    """Call Gemini with an inline image + text prompt (vision)."""
+    if not GEMINI_API_KEY:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not configured.")
+    image_b64 = base64.b64encode(image_bytes).decode()
+    payload = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [
+                    {"inline_data": {"mime_type": mime_type, "data": image_b64}},
+                    {"text": prompt},
+                ],
+            }
+        ]
+    }
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        resp = await client.post(
+            GEMINI_BASE_URL,
+            params={"key": GEMINI_API_KEY},
+            json=payload,
+        )
+    if resp.status_code != 200:
+        raise HTTPException(status_code=502, detail=f"Gemini error {resp.status_code}: {resp.text}")
+    data = resp.json()
+    candidates = data.get("candidates") or []
+    if not candidates:
+        return ""
+    parts = candidates[0].get("content", {}).get("parts") or []
+    return " ".join(p.get("text", "") for p in parts).strip()
+
+
+VISUAL_SUGGEST_PROMPT = """You are helping someone in a situation where they may need to communicate in both English and Rohingya (e.g. at a clinic, office, or community setting).
+
+Look at this image. Describe briefly what you see (setting, people, objects). Then suggest 3 short, useful phrases that someone in this visual context might want to say — for example to ask for help, describe what they need, or respond to the situation.
+
+For each suggestion provide:
+1. A natural English phrase.
+2. The same meaning in Rohingya, written ONLY in Latin script (Roman letters), as Rohingya people commonly type on phones.
+
+Output ONLY valid JSON — no explanation, no markdown:
+{
+  "suggestions": [
+    { "english": "...", "rohingya": "..." },
+    { "english": "...", "rohingya": "..." },
+    { "english": "...", "rohingya": "..." }
+  ]
+}
+Keep each phrase short (max 15 words)."""
+
+
+@app.post("/api/suggest_visual", response_model=SuggestResponse)
+async def suggest_visual(file: UploadFile = File(...)) -> SuggestResponse:
+    """Accept an image (e.g. camera frame), return phrase suggestions based on visual context."""
+    try:
+        image_bytes = await file.read()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Could not read upload: {e!s}")
+    if not image_bytes:
+        raise HTTPException(status_code=400, detail="Empty image file.")
+    max_image_bytes = 4 * 1024 * 1024  # 4MB
+    if len(image_bytes) > max_image_bytes:
+        raise HTTPException(status_code=413, detail="Image too large (max 4MB).")
+    mime_type = (file.content_type or "image/jpeg").split(";")[0].strip()
+    if mime_type not in ("image/jpeg", "image/png", "image/webp", "image/gif"):
+        mime_type = "image/jpeg"
+    try:
+        raw = await call_gemini_image(image_bytes, mime_type, VISUAL_SUGGEST_PROMPT)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Gemini/network error: {e!s}")
+    suggestions: List[SuggestionItem] = []
+    try:
+        parsed = _extract_json(raw)
+        for item in (parsed.get("suggestions") or [])[:3]:
+            eng = str(item.get("english", "")).strip()
+            roh = str(item.get("rohingya", "")).strip()
+            if eng or roh:
+                suggestions.append(SuggestionItem(english=eng, rohingya=roh))
+    except Exception:
+        pass
+    return SuggestResponse(suggestions=suggestions)
+
+
 @app.post("/api/transcribe", response_model=TranscribeResponse)
 async def transcribe(
     file: UploadFile = File(...),
-    mode: str = Form("english"),
+    mode: str = Form("auto"),
 ) -> TranscribeResponse:
     try:
         audio_bytes = await file.read()
@@ -312,7 +419,7 @@ async def transcribe(
             "Return ONLY valid JSON — no explanation, no markdown:\n"
             '{"transcript": "...", "translation": "..."}'
         )
-    else:
+    elif mode == "rohingya":
         prompt = (
             "You are a transcription and translation assistant.\n\n"
             "The attached audio contains someone speaking ROHINGYA using Latin-script phonetics.\n\n"
@@ -321,6 +428,18 @@ async def transcribe(
             "2. Translate the meaning into clear, natural English.\n\n"
             "Return ONLY valid JSON — no explanation, no markdown:\n"
             '{"transcript": "...", "translation": "..."}'
+        )
+    else:
+        # auto-detect language
+        prompt = (
+            "You are a transcription and translation assistant.\n\n"
+            "The attached audio may contain someone speaking in ENGLISH or in ROHINGYA (or a mix).\n\n"
+            "Tasks:\n"
+            "1. Identify which language is being spoken (english or rohingya).\n"
+            "2. Transcribe exactly what was said. Use Latin script for Rohingya.\n"
+            "3. Translate the transcript into the OTHER language (English→Rohingya in Latin script, or Rohingya→English).\n\n"
+            "Return ONLY valid JSON — no explanation, no markdown:\n"
+            '{"transcript": "...", "translation": "...", "detected_lang": "english" or "rohingya"}'
         )
 
     try:
@@ -332,12 +451,16 @@ async def transcribe(
 
     try:
         parsed = _extract_json(raw)
+        detected = parsed.get("detected_lang", "").strip().lower()
+        if detected not in ("english", "rohingya"):
+            detected = None
         return TranscribeResponse(
             transcript=str(parsed.get("transcript", "")).strip(),
             translation=str(parsed.get("translation", "")).strip(),
+            detected_lang=detected or None,
         )
     except Exception:
-        return TranscribeResponse(transcript=raw.strip(), translation="")
+        return TranscribeResponse(transcript=raw.strip(), translation="", detected_lang=None)
 
 
 if __name__ == "__main__":

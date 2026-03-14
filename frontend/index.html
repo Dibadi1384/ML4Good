@@ -2,27 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>English ↔ Rohingya Live Companion</title>
+  <title>Companion</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      color-scheme: dark;
-      --bg: #050816;
-      --bg-alt: #0f172a;
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.15);
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --danger: #f97373;
-      --card-bg: #020617;
-      --border: #1e293b;
+      color-scheme: light;
+      --bg: #f0f9ff;
+      --bg-light: rgba(224, 242, 254, 0.45);
+      --bg-alt: #e0f2fe;
+      --accent: #0284c7;
+      --accent-soft: rgba(2, 132, 199, 0.2);
+      --text: #0c4a6e;
+      --muted: #64748b;
+      --danger: #dc2626;
+      --card-bg: #ffffff;
+      --border: transparent;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-      background: radial-gradient(circle at top left, #1d4ed8 0, #020617 40%, #000 100%);
+      background: var(--bg-light);
       color: var(--text);
       display: flex;
       align-items: stretch;
@@ -32,12 +33,10 @@
     .app {
       width: 100%;
       max-width: 1200px;
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.9));
+      background: var(--bg-light);
       border-radius: 20px;
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      box-shadow:
-        0 40px 120px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(15, 23, 42, 0.9);
+      border: none;
+      box-shadow: none;
       padding: 18px 18px 20px;
       display: flex;
       flex-direction: column;
@@ -46,24 +45,21 @@
       overflow: hidden;
     }
     .app::before {
-      content: "";
-      position: absolute;
-      inset: -80px -40px auto auto;
-      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.25), transparent 60%);
-      opacity: 0.6;
-      pointer-events: none;
-      z-index: -1;
+      display: none;
     }
     .header {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 12px;
+      text-align: center;
     }
     .title-block {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      align-items: center;
     }
     .title {
       display: flex;
@@ -72,71 +68,49 @@
       font-size: 18px;
       font-weight: 600;
       letter-spacing: 0.02em;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-    .title-badge {
-      padding: 2px 8px;
-      font-size: 11px;
-      border-radius: 999px;
-      background: rgba(15, 118, 110, 0.1);
-      border: 1px solid rgba(45, 212, 191, 0.35);
-      color: #a5f3fc;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .subtitle {
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .mode-toggle {
+    .mode-row {
       display: inline-flex;
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 999px;
-      padding: 3px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.65);
-    }
-    .mode-btn {
-      position: relative;
-      padding: 6px 14px;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      border-radius: 999px;
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      display: flex;
       align-items: center;
-      gap: 6px;
-      transition: color 0.18s ease;
+      gap: 12px;
+      background: var(--bg-light);
+      border-radius: 12px;
+      padding: 6px 12px;
+      border: none;
+      box-shadow: none;
     }
-    .mode-btn span.flag {
+    .lang-select {
+      padding: 6px 28px 6px 10px;
       font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--bg-light);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
     }
-    .mode-btn.active {
-      color: #0f172a;
+    .lang-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-soft);
     }
-    .mode-btn.active::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #22d3ee, #a855f7);
-      box-shadow:
-        0 10px 20px rgba(15, 23, 42, 0.55),
-        0 0 0 1px rgba(15, 23, 42, 0.5);
-      z-index: -1;
-    }
-    .mode-label {
-      font-weight: 600;
+    .mode-arrow {
+      font-size: 16px;
+      color: var(--muted);
+      user-select: none;
     }
     .badge-pill {
       padding: 2px 8px;
       font-size: 10px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: var(--bg-light);
+      border: none;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--muted);
@@ -148,41 +122,57 @@
       width: 6px;
       height: 6px;
       border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.3);
+      background: #0ea5e9;
+      box-shadow: 0 0 0 6px rgba(14, 165, 233, 0.25);
     }
 
     .main {
       display: grid;
       grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      grid-template-rows: auto auto;
       gap: 16px;
       min-height: 320px;
     }
-    @media (max-width: 900px) {
+    .main .panel-suggestions-fullwidth {
+      grid-column: 1 / -1;
+    }
+    .main .panel-suggestions-fullwidth .suggestion-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      max-height: none;
+      display: flex;
+      gap: 12px;
+    }
+    .main .panel-suggestions-fullwidth .suggestion-card {
+      flex: 1 1 200px;
+      min-width: 180px;
+      max-width: 400px;
+    }
+    @media (max-width: 1100px) {
+      .main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    @media (max-width: 700px) {
       .main {
         grid-template-columns: minmax(0, 1fr);
       }
     }
 
     .panel {
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.96));
+      background: var(--bg-light);
       border-radius: 16px;
-      border: 1px solid rgba(30, 64, 175, 0.6);
+      border: none;
       padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 10px;
       position: relative;
       overflow: hidden;
+      box-shadow: none;
     }
     .panel::before {
-      content: "";
-      position: absolute;
-      inset: -80px auto auto -40px;
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 60%);
-      opacity: 0.7;
-      pointer-events: none;
-      z-index: -1;
+      display: none;
     }
 
     .panel-header {
@@ -202,7 +192,7 @@
       font-weight: 600;
       letter-spacing: 0.03em;
       text-transform: uppercase;
-      color: #e2e8f0;
+      color: var(--text);
     }
     .panel-subtitle {
       color: var(--muted);
@@ -220,23 +210,21 @@
       width: 7px;
       height: 7px;
       border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.3);
+      background: #0ea5e9;
+      box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.25);
     }
     .status-dot.error {
       background: var(--danger);
-      box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.35);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.25);
     }
 
     .video-shell {
       position: relative;
       border-radius: 12px;
       overflow: hidden;
-      background: radial-gradient(circle at top, #0f172a, #020617);
-      border: 1px solid rgba(30, 64, 175, 0.8);
-      box-shadow:
-        0 16px 45px rgba(15, 23, 42, 0.9),
-        inset 0 0 0 1px rgba(15, 23, 42, 0.85);
+      background: var(--bg-light);
+      border: none;
+      box-shadow: none;
       aspect-ratio: 4 / 3;
       display: flex;
       align-items: center;
@@ -252,14 +240,14 @@
     .video-overlay {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at top, rgba(30, 64, 175, 0.45), transparent 60%);
+      background: radial-gradient(circle at top, rgba(14, 165, 233, 0.15), transparent 60%);
       pointer-events: none;
       mix-blend-mode: soft-light;
     }
     .video-glass {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.08), transparent 30%, rgba(15, 23, 42, 0.5));
+      background: transparent;
       pointer-events: none;
     }
     .video-badge {
@@ -267,8 +255,8 @@
       inset: 10px auto auto 10px;
       padding: 4px 9px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: var(--bg-light);
+      border: none;
       font-size: 11px;
       display: inline-flex;
       align-items: center;
@@ -281,15 +269,23 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      background: rgba(56, 189, 248, 0.15);
-      color: #e0f2fe;
-      border: 1px solid rgba(56, 189, 248, 0.5);
+      background: rgba(14, 165, 233, 0.2);
+      color: var(--accent);
+      border: none;
     }
     .controls {
       position: absolute;
       inset: auto 10px 10px auto;
       display: flex;
       gap: 6px;
+    }
+    .mic-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 8px 0;
     }
     .icon-btn {
       width: 30px;
@@ -300,23 +296,40 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: var(--bg-light);
       color: var(--muted);
       font-size: 14px;
       transition: background 0.16s ease, color 0.16s ease, transform 0.08s ease, border-color 0.16s ease;
     }
+    .icon-btn.mic-main {
+      width: 72px;
+      height: 72px;
+      font-size: 32px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: #fff;
+      border: none;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+    }
+    .icon-btn.mic-main svg {
+      display: block;
+      margin: auto;
+    }
+    .icon-btn.mic-main:hover {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(2, 132, 199, 0.4);
+    }
     .icon-btn.primary {
-      background: linear-gradient(135deg, #22d3ee, #a855f7);
-      color: #0b1120;
-      border-color: rgba(15, 23, 42, 0.9);
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: #fff;
+      border-color: var(--accent);
       font-size: 16px;
     }
     .icon-btn:hover {
       transform: translateY(-1px);
-      background: rgba(15, 23, 42, 0.98);
-      color: #e5e7eb;
-      border-color: rgba(148, 163, 184, 0.9);
+      background: rgba(14, 165, 233, 0.12);
+      color: var(--text);
+      border-color: var(--accent);
     }
     .icon-btn.primary:hover {
       filter: brightness(1.05);
@@ -336,15 +349,13 @@
     .captions {
       margin-top: 10px;
       border-radius: 12px;
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
-      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: var(--bg-light);
+      border: none;
       padding: 10px 11px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      box-shadow:
-        0 16px 40px rgba(15, 23, 42, 1),
-        inset 0 0 0 1px rgba(15, 23, 42, 0.95);
+      box-shadow: none;
     }
     .caption-label-row {
       display: flex;
@@ -358,7 +369,7 @@
       letter-spacing: 0.09em;
       font-weight: 600;
       font-size: 11px;
-      color: #e2e8f0;
+      color: var(--text);
     }
     .caption-pair {
       display: grid;
@@ -368,20 +379,19 @@
     .caption-line {
       padding: 7px 9px;
       border-radius: 8px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(51, 65, 85, 0.9);
+      background: var(--bg-light);
+      border: none;
       min-height: 32px;
       font-size: 13px;
       line-height: 1.4;
       display: flex;
       align-items: center;
-      color: #e5e7eb;
+      color: var(--text);
     }
     .caption-line.muted {
-      color: #9ca3af;
-      background: rgba(15, 23, 42, 0.9);
-      border-style: dashed;
-      border-color: rgba(75, 85, 99, 0.8);
+      color: var(--muted);
+      background: var(--bg-light);
+      border: none;
     }
     .caption-placeholder {
       font-size: 12px;
@@ -397,7 +407,7 @@
       color: var(--muted);
     }
     .gemini-status span.em {
-      color: #e0f2fe;
+      color: var(--accent);
       font-weight: 500;
     }
     .gemini-status-right {
@@ -408,12 +418,12 @@
     .gemini-pill {
       padding: 2px 8px;
       border-radius: 999px;
-      border: 1px solid rgba(56, 189, 248, 0.5);
-      background: rgba(15, 23, 42, 0.95);
+      border: none;
+      background: var(--bg-light);
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #bae6fd;
+      color: var(--accent);
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -422,8 +432,8 @@
       width: 12px;
       height: 12px;
       border-radius: 999px;
-      border: 2px solid rgba(148, 163, 184, 0.4);
-      border-top-color: #38bdf8;
+      border: 2px solid rgba(14, 165, 233, 0.3);
+      border-top-color: var(--accent);
       animation: spin 0.7s linear infinite;
     }
     @keyframes spin {
@@ -445,47 +455,36 @@
     .suggestion-empty {
       padding: 12px 10px;
       border-radius: 10px;
-      border: 1px dashed rgba(75, 85, 99, 0.9);
-      background: rgba(15, 23, 42, 0.85);
+      border: none;
+      background: var(--bg-light);
       font-size: 12px;
       color: var(--muted);
       line-height: 1.5;
     }
     .suggestion-empty strong {
-      color: #e5e7eb;
+      color: var(--text);
       font-weight: 500;
     }
     .suggestion-card {
       border-radius: 10px;
       padding: 8px 9px;
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.96));
-      border: 1px solid rgba(37, 99, 235, 0.7);
+      background: var(--bg-light);
+      border: none;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       gap: 4px;
       position: relative;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
-      box-shadow:
-        0 10px 30px rgba(15, 23, 42, 0.9),
-        inset 0 0 0 1px rgba(15, 23, 42, 0.95);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      box-shadow: none;
     }
     .suggestion-card:hover {
       transform: translateY(-1px) translateZ(0);
-      border-color: rgba(96, 165, 250, 0.9);
-      box-shadow:
-        0 18px 40px rgba(15, 23, 42, 1),
-        0 0 0 1px rgba(15, 23, 42, 1);
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      background: rgba(224, 242, 254, 0.7);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
     }
     .suggestion-card::before {
-      content: "";
-      position: absolute;
-      inset: -40% 40% auto -40%;
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.2), transparent 65%);
-      opacity: 0.8;
-      pointer-events: none;
-      z-index: -1;
+      display: none;
     }
     .suggestion-header-row {
       display: flex;
@@ -497,9 +496,9 @@
     .suggestion-chip {
       padding: 2px 7px;
       border-radius: 999px;
-      background: rgba(37, 99, 235, 0.2);
-      color: #bfdbfe;
-      border: 1px solid rgba(96, 165, 250, 0.7);
+      background: rgba(14, 165, 233, 0.2);
+      color: var(--accent);
+      border: none;
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.07em;
@@ -507,11 +506,11 @@
     .suggestion-body {
       font-size: 13px;
       line-height: 1.4;
-      color: #e5e7eb;
+      color: var(--text);
     }
     .suggestion-ro {
       font-size: 12px;
-      color: #a5b4fc;
+      color: var(--accent);
     }
     .suggestion-footer {
       display: flex;
@@ -524,8 +523,8 @@
     .pill-soft {
       padding: 2px 7px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: var(--bg-light);
+      border: none;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -534,7 +533,7 @@
       width: 5px;
       height: 5px;
       border-radius: 999px;
-      background: #facc15;
+      background: #0ea5e9;
     }
 
     .footer {
@@ -547,7 +546,7 @@
       margin-top: 2px;
     }
     .footer a {
-      color: #93c5fd;
+      color: var(--accent);
       text-decoration: none;
     }
     .footer a:hover {
@@ -563,27 +562,7 @@
   <div class="header">
     <div class="title-block">
       <div class="title">
-        <span>English ↔ Rohingya Live Companion</span>
-        <span class="title-badge">Prototype • Local only</span>
-      </div>
-      <div class="subtitle">
-        Live camera, captions, Gemini-powered translation, and suggested replies tailored for English and Rohingya (Latin script).
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:220px;">
-      <div class="mode-toggle" id="modeToggle">
-        <button class="mode-btn active" data-mode="english">
-          <span class="flag">🇺🇸</span>
-          <span class="mode-label">English → Rohingya</span>
-        </button>
-        <button class="mode-btn" data-mode="rohingya">
-          <span class="flag">🌍</span>
-          <span class="mode-label">Rohingya → English</span>
-        </button>
-      </div>
-      <div class="badge-pill">
-        <span class="badge-dot"></span>
-        <span id="srStatusLabel">Speech recognition: idle</span>
+        <span></span>
       </div>
     </div>
   </div>
@@ -592,13 +571,10 @@
     <!-- Left: Camera + captions -->
     <div class="panel">
       <div class="panel-header">
-        <div class="panel-header-left">
-          <div class="panel-title">Live camera & captions</div>
-          <div class="panel-subtitle">Your face and voice never leave this browser. Backend only sees text.</div>
-        </div>
+        <div class="panel-header-left"></div>
         <div class="status-row">
           <span class="status-dot" id="cameraDot"></span>
-          <span id="cameraStatus">Camera: initializing…</span>
+          <span id="cameraStatus"></span>
         </div>
       </div>
 
@@ -606,18 +582,17 @@
         <video id="video" autoplay playsinline muted></video>
         <div class="video-overlay"></div>
         <div class="video-glass"></div>
-        <div class="video-badge">
-          <span class="video-badge-pill">Live</span>
-          <span>Mic + Camera active</span>
-        </div>
         <div class="controls">
-          <button class="icon-btn primary" id="micToggleBtn" title="Start / stop listening">
-            🎙
-          </button>
           <button class="icon-btn" id="cameraRetryBtn" title="Retry camera">
             ⟳
           </button>
         </div>
+      </div>
+      <div class="mic-row">
+        <button class="icon-btn mic-main" id="micToggleBtn" title="Start / stop listening">
+          <svg class="mic-icon" id="micIcon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="9" y1="22" x2="15" y2="22"/></svg>
+          <svg class="mic-stop-icon" id="micStopIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        </button>
       </div>
 
       <div class="captions">
@@ -625,96 +600,51 @@
           <div>
             <span class="caption-label-main" id="captionTitle">Captions</span>
           </div>
-          <div id="captionHint">Speak in English. Bottom line is Rohingya transliteration.</div>
+          <div id="captionHint"></div>
         </div>
         <div class="caption-pair">
           <div class="caption-line" id="sourceCaption">
-            <span class="caption-placeholder">Waiting for speech…</span>
+            <span class="caption-placeholder">—</span>
           </div>
           <div class="caption-line muted" id="targetCaption">
-            <span class="caption-placeholder">Translated text will appear here.</span>
+            <span class="caption-placeholder">—</span>
           </div>
         </div>
-        <div class="gemini-status">
-          <div>
-            <span class="em" id="backendStatusText">Backend: checking…</span>
-          </div>
-          <div class="gemini-status-right">
-            <div class="gemini-pill">
-              <span class="spinner" id="geminiSpinner" style="display:none;"></span>
-              FastAPI • gemini-2.5-flash
-            </div>
-          </div>
-        </div>
+        <div style="display:none;"><span id="backendStatusText"></span><span class="spinner" id="geminiSpinner"></span></div>
       </div>
     </div>
 
-    <!-- Right: Suggested dialogues -->
-    <div class="panel suggestions-panel">
+    <!-- Center: Suggested phrases from scene (camera frame) -->
+    <div class="panel suggestions-panel visual-suggestions-panel">
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <div class="panel-title">Suggested phrases from scene</div>
+        </div>
+        <div class="status-row">
+          <span class="status-dot" id="visualSuggestionsDot"></span>
+          <span id="visualSuggestionsStatus"></span>
+        </div>
+      </div>
+      <div class="suggestion-list" id="visualSuggestionList">
+        <div class="suggestion-empty">None yet.</div>
+      </div>
+    </div>
+
+    <!-- Full width: Suggested next phrases (from conversation) -->
+    <div class="panel suggestions-panel panel-suggestions-fullwidth">
       <div class="panel-header">
         <div class="panel-header-left">
           <div class="panel-title">Suggested next phrases</div>
-          <div class="panel-subtitle">
-            Based on the conversation so far. Click a card to hear it.
-          </div>
         </div>
         <div class="status-row">
           <span class="status-dot" id="suggestionsDot"></span>
-          <span id="suggestionsStatus">Suggestions update after each turn.</span>
+          <span id="suggestionsStatus"></span>
         </div>
       </div>
 
       <div class="suggestion-list" id="suggestionList">
-        <div class="suggestion-empty">
-          <strong>No suggestions yet.</strong><br />
-          Start speaking and, after each translated segment, the backend will propose a few useful responses in both English and Rohingya (Latin script).
-        </div>
+        <div class="suggestion-empty">None yet.</div>
       </div>
-    </div>
-  </div>
-
-  <div class="footer">
-    <div>
-      Backend must be running on <code>http://localhost:8000</code>. Configure your Gemini API key there.
-    </div>
-    <div>
-      Uses <span style="color:#e5e7eb;font-weight:500;">SpeechRecognition</span> in Chrome/Edge and
-      <span style="color:#e5e7eb;font-weight:500;">speechSynthesis</span> to read out replies.
-    </div>
-  </div>
-
-  <!-- Debug bar — remove once working -->
-  <div id="debugBar" style="
-    margin-top:10px;
-    padding:10px 12px;
-    border-radius:10px;
-    background:rgba(0,0,0,0.6);
-    border:1px solid rgba(148,163,184,0.3);
-    font-size:11px;
-    color:#94a3b8;
-    font-family:monospace;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  ">
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <strong style="color:#e2e8f0;">SR Debug:</strong>
-      <span id="dbgSR">waiting…</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <strong style="color:#e2e8f0;">Mic level:</strong>
-      <div style="flex:1;min-width:120px;max-width:300px;height:10px;background:#1e293b;border-radius:999px;overflow:hidden;">
-        <div id="micLevelBar" style="height:100%;width:0%;background:linear-gradient(90deg,#22d3ee,#a855f7);border-radius:999px;transition:width 0.05s;"></div>
-      </div>
-      <span id="micLevelText" style="min-width:80px;">not started</span>
-      <button id="testMicBtn" style="
-        padding:3px 10px;font-size:11px;border-radius:999px;
-        border:1px solid rgba(148,163,184,0.5);background:rgba(15,23,42,0.9);
-        color:#e2e8f0;cursor:pointer;">▶ Test mic</button>
-      <button id="stopMicTestBtn" style="
-        padding:3px 10px;font-size:11px;border-radius:999px;
-        border:1px solid rgba(148,163,184,0.5);background:rgba(15,23,42,0.9);
-        color:#e2e8f0;cursor:pointer;display:none;">■ Stop test</button>
     </div>
   </div>
 </div>
@@ -730,39 +660,22 @@
   const cameraDotEl         = document.getElementById("cameraDot");
   const micToggleBtn        = document.getElementById("micToggleBtn");
   const cameraRetryBtn      = document.getElementById("cameraRetryBtn");
-  const modeToggleEl        = document.getElementById("modeToggle");
-  const srStatusLabel       = document.getElementById("srStatusLabel");
   const captionTitleEl      = document.getElementById("captionTitle");
   const captionHintEl       = document.getElementById("captionHint");
   const sourceCaptionEl     = document.getElementById("sourceCaption");
   const targetCaptionEl     = document.getElementById("targetCaption");
   const backendStatusTextEl = document.getElementById("backendStatusText");
   const geminiSpinnerEl     = document.getElementById("geminiSpinner");
-  const suggestionListEl    = document.getElementById("suggestionList");
-  const suggestionsDotEl    = document.getElementById("suggestionsDot");
-  const suggestionsStatusEl = document.getElementById("suggestionsStatus");
-  const dbgEl               = document.getElementById("dbgSR");
+  const suggestionListEl         = document.getElementById("suggestionList");
+  const suggestionsDotEl         = document.getElementById("suggestionsDot");
+  const suggestionsStatusEl      = document.getElementById("suggestionsStatus");
+  const visualSuggestionListEl   = document.getElementById("visualSuggestionList");
+  const visualSuggestionsDotEl   = document.getElementById("visualSuggestionsDot");
+  const visualSuggestionsStatusEl = document.getElementById("visualSuggestionsStatus");
 
   // ====== State ======
   let currentMode        = "english";
   let conversationHistory = [];
-
-  // ====== Debug helper ======
-  const dbgLog = [];
-  function dbg(msg) {
-    const line = new Date().toLocaleTimeString() + " — " + msg;
-    console.log("[SR]", msg);
-    dbgLog.push(line);
-    if (dbgLog.length > 6) dbgLog.shift();
-    if (dbgEl) dbgEl.innerHTML = dbgLog.map(l => {
-      const colour = l.includes("onerror") ? "#f97373"
-                   : l.includes("heard")   ? "#86efac"
-                   : l.includes("onstart") ? "#67e8f9"
-                   : l.includes("sending") ? "#c4b5fd"
-                   : "#94a3b8";
-      return `<span style="color:${colour}">${l}</span>`;
-    }).join("<br>");
-  }
 
   // ====== UI helpers ======
   function setCameraStatus(ok, msg) {
@@ -777,6 +690,11 @@
 
   function setSuggestionsBusy(busy, label) {
     suggestionsStatusEl.textContent = label || (busy ? "Fetching phrases…" : "Updated.");
+  }
+
+  function setVisualSuggestionsBusy(busy, label) {
+    if (visualSuggestionsStatusEl) visualSuggestionsStatusEl.textContent = label || (busy ? "Analyzing scene…" : "Updated.");
+    if (visualSuggestionsDotEl) visualSuggestionsDotEl.classList.toggle("error", !busy && false);
   }
 
   function showBackendError(msg) {
@@ -795,8 +713,7 @@
   }
 
   function clearSuggestions() {
-    suggestionListEl.innerHTML =
-      '<div class="suggestion-empty"><strong>No suggestions yet.</strong><br/>Start speaking — after each translation Gemini will suggest replies.</div>';
+    suggestionListEl.innerHTML = '<div class="suggestion-empty">None yet.</div>';
   }
 
   function renderSuggestions(items) {
@@ -828,27 +745,79 @@
     });
   }
 
+  function clearVisualSuggestions() {
+    if (!visualSuggestionListEl) return;
+    visualSuggestionListEl.innerHTML = '<div class="suggestion-empty">None yet.</div>';
+  }
+
+  function renderVisualSuggestions(items) {
+    if (!visualSuggestionListEl) return;
+    if (!items || !items.length) { clearVisualSuggestions(); return; }
+    visualSuggestionListEl.innerHTML = items.map((item, i) => `
+      <div class="suggestion-card"
+           data-en="${encodeURIComponent(item.english || "")}"
+           data-ro="${encodeURIComponent(item.rohingya || "")}">
+        <div class="suggestion-header-row">
+          <div class="suggestion-chip">Scene ${i + 1}</div>
+          <div>Click to speak</div>
+        </div>
+        <div class="suggestion-body">${item.english || "—"}</div>
+        <div class="suggestion-ro">${item.rohingya || ""}</div>
+        <div class="suggestion-footer">
+          <div class="pill-soft"><span class="pill-soft-dot"></span><span>EN + Rohingya Latin</span></div>
+        </div>
+      </div>`).join("");
+    visualSuggestionListEl.querySelectorAll(".suggestion-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const text = decodeURIComponent(card.dataset.en || card.dataset.ro || "");
+        if (!text || !window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-US";
+        window.speechSynthesis.speak(u);
+      });
+    });
+  }
+
   function updateModeUI() {
-    modeToggleEl.querySelectorAll(".mode-btn").forEach(b =>
-      b.classList.toggle("active", b.dataset.mode === currentMode));
-    if (currentMode === "english") {
-      captionTitleEl.textContent = "Speak English → Rohingya";
-      captionHintEl.textContent  = "Top: your English. Bottom: Rohingya (Latin script).";
-    } else {
-      captionTitleEl.textContent = "Speak Rohingya → English";
-      captionHintEl.textContent  = "Top: your Rohingya (Latin). Bottom: English meaning.";
-    }
+    captionTitleEl.textContent = "Captions";
+    captionHintEl.textContent  = "";
   }
 
   // ====== Backend calls ======
-  async function backendTranslate(text, mode) {
+  async function backendTranslate(text) {
     const res = await fetch(BACKEND_BASE + "/api/translate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, mode }),
+      body: JSON.stringify({ text, mode: "auto" }),
     });
     if (!res.ok) throw new Error("Translate " + res.status);
-    return (await res.json()).translation || "";
+    const data = await res.json();
+    return { translation: data.translation || "", detected_lang: data.detected_lang || null };
+  }
+
+  /** Capture current video frame as JPEG blob, or null if video not ready. */
+  function captureFrameFromVideo() {
+    if (!videoEl || !videoEl.srcObject || videoEl.readyState < 2 || videoEl.videoWidth === 0) return null;
+    const w = videoEl.videoWidth;
+    const h = videoEl.videoHeight;
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.drawImage(videoEl, 0, 0, w, h);
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob || null), "image/jpeg", 0.85);
+    });
+  }
+
+  async function backendSuggestVisual(imageBlob) {
+    const form = new FormData();
+    form.append("file", imageBlob, "frame.jpg");
+    const res = await fetch(BACKEND_BASE + "/api/suggest_visual", { method: "POST", body: form });
+    if (!res.ok) throw new Error("Suggest visual " + res.status);
+    return (await res.json()).suggestions || [];
   }
 
   async function backendSuggest() {
@@ -881,7 +850,9 @@
     if (!text) return;
     try {
       setBackendBusy(true, "Translating…");
-      const translation = await backendTranslate(text, currentMode);
+      const { translation, detected_lang } = await backendTranslate(text);
+      const mode = (detected_lang === "english" || detected_lang === "rohingya") ? detected_lang : currentMode;
+      if (mode !== currentMode) currentMode = mode;
       renderCaptions(text, translation);
       conversationHistory.push({ mode: currentMode, source: text, target: translation });
       if (conversationHistory.length > 12) conversationHistory = conversationHistory.slice(-12);
@@ -903,10 +874,9 @@
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       videoEl.srcObject = stream;
-      setCameraStatus(true, "Camera: live");
+      setCameraStatus(true, "");
     } catch (err) {
       setCameraStatus(false, "Camera blocked: " + err.message);
-      dbg("camera error: " + err.message);
     }
   }
   cameraRetryBtn.addEventListener("click", startCamera);
@@ -923,27 +893,17 @@
   let recStream      = null;
 
   function setMicUI(on) {
-    micToggleBtn.textContent  = on ? "⏹" : "🎙";
-    micToggleBtn.title        = on ? "Stop & translate" : "Start recording";
-    srStatusLabel.textContent = on
-      ? "Recording — click ⏹ to stop & translate"
-      : "Idle — click 🎙 to start";
+    const micIcon = document.getElementById("micIcon");
+    const stopIcon = document.getElementById("micStopIcon");
+    if (micIcon) micIcon.style.display = on ? "none" : "block";
+    if (stopIcon) stopIcon.style.display = on ? "block" : "none";
+    micToggleBtn.title = on ? "Stop & translate" : "Start recording";
   }
 
   async function micStart() {
-    // Release any active mic-test stream first
-    if (micTestAnim)   { cancelAnimationFrame(micTestAnim); micTestAnim = null; }
-    if (micTestStream) { micTestStream.getTracks().forEach(t => t.stop()); micTestStream = null; }
-    stopMicTest.style.display = "none";
-    testMicBtn.style.display  = "inline-block";
-    micLevelBar.style.width   = "0%";
-    micLevelText.textContent  = "stopped";
-
     try {
       recStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
     } catch (err) {
-      srStatusLabel.textContent = "Mic blocked: " + err.message;
-      dbg("getUserMedia error: " + err.message);
       return;
     }
 
@@ -961,8 +921,20 @@
     mediaRecorder.start(250); // collect a chunk every 250ms
     isListening = true;
     setMicUI(true);
-    sourceCaptionEl.textContent = "Recording… speak now, then click ⏹ to translate";
-    dbg("MediaRecorder started — mime: " + (mime || "browser default"));
+    sourceCaptionEl.textContent = "Recording…";
+
+    // Capture current camera frame and get scene-based phrase suggestions (non-blocking)
+    captureFrameFromVideo().then((blob) => {
+      if (!blob) return;
+      setVisualSuggestionsBusy(true, "Analyzing scene…");
+      backendSuggestVisual(blob).then((suggestions) => {
+        renderVisualSuggestions(suggestions);
+        setVisualSuggestionsBusy(false, "");
+      }).catch((err) => {
+        console.error("Visual suggest:", err);
+        setVisualSuggestionsBusy(false, "Failed");
+      });
+    });
   }
 
   async function micStop() {
@@ -970,7 +942,6 @@
     isListening = false;
     setMicUI(false);
     sourceCaptionEl.textContent = "Processing audio…";
-    dbg("recording stopped — sending to Gemini…");
 
     mediaRecorder.onstop = async () => {
       const mimeType = mediaRecorder.mimeType || "audio/webm";
@@ -979,37 +950,32 @@
       if (recStream) { recStream.getTracks().forEach(t => t.stop()); recStream = null; }
 
       const kb = (blob.size / 1024).toFixed(1);
-      dbg("audio blob: " + kb + " KB — uploading…");
 
       if (blob.size < 1000) {
-        sourceCaptionEl.textContent = "Recording too short — hold 🎙 for at least 1 second";
+        sourceCaptionEl.textContent = "Recording too short.";
         setBackendBusy(false);
-        dbg("blob too small (" + kb + " KB), skipping");
         return;
       }
 
       const form = new FormData();
       form.append("file", blob, "recording.webm");
-      form.append("mode", currentMode);
+      form.append("mode", "auto");
 
       // 45s hard timeout — backend also times out Gemini at 25s
       const abort = new AbortController();
       const timeoutMs = 45000;
-      const timer = setTimeout(() => {
-        abort.abort();
-        dbg("request timed out after 45s");
-      }, timeoutMs);
+      const timer = setTimeout(() => abort.abort(), timeoutMs);
 
       // After 8s, show that we're still waiting (avoids "stuck" feeling)
       const progressMsg = setTimeout(() => {
-        setBackendBusy(true, "Still waiting for Gemini…");
-        sourceCaptionEl.textContent = "⏳ Gemini is transcribing… (this can take 10–25s)";
+        setBackendBusy(true, "Waiting…");
+        sourceCaptionEl.textContent = "Processing…";
       }, 8000);
 
       try {
         setBackendBusy(true, "Uploading (" + kb + " KB)…");
-        sourceCaptionEl.textContent = "⏳ Sending audio to backend…";
-        targetCaptionEl.textContent = "Translation will appear here once Gemini responds";
+        sourceCaptionEl.textContent = "Sending…";
+        targetCaptionEl.textContent = "—";
 
         const res = await fetch(BACKEND_BASE + "/api/transcribe", {
           method: "POST",
@@ -1038,23 +1004,22 @@
 
         // Show the detected speech immediately, clearly labelled
         if (!transcript) {
-          sourceCaptionEl.textContent = "Gemini could not make out any speech — try again";
+          sourceCaptionEl.textContent = "No speech detected.";
           targetCaptionEl.textContent = "—";
-          setBackendBusy(false, "No transcript.");
-          dbg("empty transcript from Gemini");
+          setBackendBusy(false);
           return;
         }
 
-        dbg("transcript: " + transcript);
-
-        // Step 1 — show what was heard right away
+        // Show what was heard
         sourceCaptionEl.textContent = transcript;
         targetCaptionEl.textContent = translation
           ? translation
           : "⏳ Waiting for translation…";
         setBackendBusy(false, translation ? "Translation ready." : "Transcript ready.");
 
-        conversationHistory.push({ mode: currentMode, source: transcript, target: translation });
+        const detectedLang = (data.detected_lang === "rohingya" || data.detected_lang === "english") ? data.detected_lang : "english";
+        currentMode = detectedLang;
+        conversationHistory.push({ mode: detectedLang, source: transcript, target: translation });
         if (conversationHistory.length > 12) conversationHistory = conversationHistory.slice(-12);
 
         if (translation) {
@@ -1069,16 +1034,15 @@
         const msg = err.message || "";
         if (err.name === "AbortError") {
           showBackendError("Request timed out (45s). Is the backend running? Try a shorter recording.");
-          sourceCaptionEl.textContent = "Timed out — try again with a shorter clip";
+          sourceCaptionEl.textContent = "Timed out.";
         } else if (msg === "Failed to fetch" || msg.includes("Load failed") || msg.includes("NetworkError")) {
           showBackendError("Cannot reach backend at " + BACKEND_BASE + ". Is it running? (uvicorn on port 8000)");
-          sourceCaptionEl.textContent = "Backend unreachable — start: cd backend && uvicorn main:app --reload --port 8000";
+          sourceCaptionEl.textContent = "Backend unreachable.";
         } else {
           showBackendError(msg);
-          sourceCaptionEl.textContent = "Error: " + msg;
+          sourceCaptionEl.textContent = msg || "Error";
         }
         setBackendBusy(false);
-        dbg("error: " + msg);
       }
     };
 
@@ -1089,65 +1053,11 @@
     if (!isListening) micStart(); else micStop();
   });
 
-  // ====== Mode toggle ======
-  modeToggleEl.addEventListener("click", (e) => {
-    const btn = e.target.closest(".mode-btn");
-    if (!btn || btn.dataset.mode === currentMode) return;
-    currentMode = btn.dataset.mode;
-    updateModeUI();
-    renderCaptions("", "");
-  });
-
-  // ====== Mic level meter (diagnostic) ======
-  const micLevelBar  = document.getElementById("micLevelBar");
-  const micLevelText = document.getElementById("micLevelText");
-  const testMicBtn   = document.getElementById("testMicBtn");
-  const stopMicTest  = document.getElementById("stopMicTestBtn");
-  let micTestStream  = null;
-  let micTestAnim    = null;
-
-  testMicBtn.addEventListener("click", async () => {
-    try {
-      micTestStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      const ctx = new AudioContext();
-      const src = ctx.createMediaStreamSource(micTestStream);
-      const anal = ctx.createAnalyser();
-      anal.fftSize = 256;
-      src.connect(anal);
-      const buf = new Uint8Array(anal.frequencyBinCount);
-      testMicBtn.style.display  = "none";
-      stopMicTest.style.display = "inline-block";
-      micLevelText.textContent  = "listening…";
-      function tick() {
-        anal.getByteFrequencyData(buf);
-        const avg = buf.reduce((a, b) => a + b, 0) / buf.length;
-        const pct = Math.min(100, avg * 3).toFixed(0);
-        micLevelBar.style.width  = pct + "%";
-        micLevelText.textContent = pct > 5 ? "AUDIO OK (" + pct + "%)" : "silence (" + pct + "%)";
-        micTestAnim = requestAnimationFrame(tick);
-      }
-      tick();
-    } catch (err) {
-      micLevelText.textContent = "ERROR: " + err.message;
-    }
-  });
-
-  stopMicTest.addEventListener("click", () => {
-    if (micTestAnim)   cancelAnimationFrame(micTestAnim);
-    if (micTestStream) micTestStream.getTracks().forEach(t => t.stop());
-    micTestStream = null; micTestAnim = null;
-    micLevelBar.style.width   = "0%";
-    micLevelText.textContent  = "stopped";
-    testMicBtn.style.display  = "inline-block";
-    stopMicTest.style.display = "none";
-  });
-
   // ====== Boot ======
   updateModeUI();
   startCamera();
   clearSuggestions();
   checkBackendHealth();
-  dbg("page loaded — waiting for mic");
 </script>
 </body>
 </html>
