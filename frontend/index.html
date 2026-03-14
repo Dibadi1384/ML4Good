@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>English ↔ Rohingya Live Companion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050816;
+      --bg-alt: #0f172a;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --card-bg: #020617;
+      --border: #1e293b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top left, #1d4ed8 0, #020617 40%, #000 100%);
+      color: var(--text);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 24px;
+    }
+    .app {
+      width: 100%;
+      max-width: 1200px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.9));
+      border-radius: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow:
+        0 40px 120px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      padding: 18px 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .app::before {
+      content: "";
+      position: absolute;
+      inset: -80px -40px auto auto;
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.25), transparent 60%);
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .title-badge {
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 999px;
+      background: rgba(15, 118, 110, 0.1);
+      border: 1px solid rgba(45, 212, 191, 0.35);
+      color: #a5f3fc;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .mode-toggle {
+      display: inline-flex;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      padding: 3px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.65);
+    }
+    .mode-btn {
+      position: relative;
+      padding: 6px 14px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.18s ease;
+    }
+    .mode-btn span.flag {
+      font-size: 13px;
+    }
+    .mode-btn.active {
+      color: #0f172a;
+    }
+    .mode-btn.active::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      box-shadow:
+        0 10px 20px rgba(15, 23, 42, 0.55),
+        0 0 0 1px rgba(15, 23, 42, 0.5);
+      z-index: -1;
+    }
+    .mode-label {
+      font-weight: 600;
+    }
+    .badge-pill {
+      padding: 2px 8px;
+      font-size: 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.3);
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: 16px;
+      min-height: 320px;
+    }
+    @media (max-width: 900px) {
+      .main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.96));
+      border-radius: 16px;
+      border: 1px solid rgba(30, 64, 175, 0.6);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -80px auto auto -40px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .panel-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .panel-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #e2e8f0;
+    }
+    .panel-subtitle {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .status-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.3);
+    }
+    .status-dot.error {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.35);
+    }
+
+    .video-shell {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      border: 1px solid rgba(30, 64, 175, 0.8);
+      box-shadow:
+        0 16px 45px rgba(15, 23, 42, 0.9),
+        inset 0 0 0 1px rgba(15, 23, 42, 0.85);
+      aspect-ratio: 4 / 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.1) contrast(1.05);
+    }
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(30, 64, 175, 0.45), transparent 60%);
+      pointer-events: none;
+      mix-blend-mode: soft-light;
+    }
+    .video-glass {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.08), transparent 30%, rgba(15, 23, 42, 0.5));
+      pointer-events: none;
+    }
+    .video-badge {
+      position: absolute;
+      inset: 10px auto auto 10px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+    }
+    .video-badge-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: rgba(56, 189, 248, 0.15);
+      color: #e0f2fe;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+    }
+    .controls {
+      position: absolute;
+      inset: auto 10px 10px auto;
+      display: flex;
+      gap: 6px;
+    }
+    .icon-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      color: var(--muted);
+      font-size: 14px;
+      transition: background 0.16s ease, color 0.16s ease, transform 0.08s ease, border-color 0.16s ease;
+    }
+    .icon-btn.primary {
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      color: #0b1120;
+      border-color: rgba(15, 23, 42, 0.9);
+      font-size: 16px;
+    }
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(15, 23, 42, 0.98);
+      color: #e5e7eb;
+      border-color: rgba(148, 163, 184, 0.9);
+    }
+    .icon-btn.primary:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+    .icon-btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+    .icon-btn[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .captions {
+      margin-top: 10px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 10px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow:
+        0 16px 40px rgba(15, 23, 42, 1),
+        inset 0 0 0 1px rgba(15, 23, 42, 0.95);
+    }
+    .caption-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .caption-label-main {
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-weight: 600;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .caption-pair {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
+    .caption-line {
+      padding: 7px 9px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      min-height: 32px;
+      font-size: 13px;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      color: #e5e7eb;
+    }
+    .caption-line.muted {
+      color: #9ca3af;
+      background: rgba(15, 23, 42, 0.9);
+      border-style: dashed;
+      border-color: rgba(75, 85, 99, 0.8);
+    }
+    .caption-placeholder {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .gemini-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .gemini-status span.em {
+      color: #e0f2fe;
+      font-weight: 500;
+    }
+    .gemini-status-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .gemini-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      background: rgba(15, 23, 42, 0.95);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #bae6fd;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .spinner {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 2px solid rgba(148, 163, 184, 0.4);
+      border-top-color: #38bdf8;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .suggestions-panel {
+      position: relative;
+    }
+    .suggestion-list {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 280px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+    .suggestion-empty {
+      padding: 12px 10px;
+      border-radius: 10px;
+      border: 1px dashed rgba(75, 85, 99, 0.9);
+      background: rgba(15, 23, 42, 0.85);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .suggestion-empty strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+    .suggestion-card {
+      border-radius: 10px;
+      padding: 8px 9px;
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(37, 99, 235, 0.7);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+      box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.9),
+        inset 0 0 0 1px rgba(15, 23, 42, 0.95);
+    }
+    .suggestion-card:hover {
+      transform: translateY(-1px) translateZ(0);
+      border-color: rgba(96, 165, 250, 0.9);
+      box-shadow:
+        0 18px 40px rgba(15, 23, 42, 1),
+        0 0 0 1px rgba(15, 23, 42, 1);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+    }
+    .suggestion-card::before {
+      content: "";
+      position: absolute;
+      inset: -40% 40% auto -40%;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.2), transparent 65%);
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .suggestion-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .suggestion-chip {
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.2);
+      color: #bfdbfe;
+      border: 1px solid rgba(96, 165, 250, 0.7);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+    .suggestion-body {
+      font-size: 13px;
+      line-height: 1.4;
+      color: #e5e7eb;
+    }
+    .suggestion-ro {
+      font-size: 12px;
+      color: #a5b4fc;
+    }
+    .suggestion-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      margin-top: 2px;
+      color: var(--muted);
+    }
+    .pill-soft {
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pill-soft-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: #facc15;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .footer a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    .error-text {
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="title-block">
+      <div class="title">
+        <span>English ↔ Rohingya Live Companion</span>
+        <span class="title-badge">Prototype • Local only</span>
+      </div>
+      <div class="subtitle">
+        Live camera, captions, Gemini-powered translation, and suggested replies tailored for English and Rohingya (Latin script).
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:220px;">
+      <div class="mode-toggle" id="modeToggle">
+        <button class="mode-btn active" data-mode="english">
+          <span class="flag">🇺🇸</span>
+          <span class="mode-label">English → Rohingya</span>
+        </button>
+        <button class="mode-btn" data-mode="rohingya">
+          <span class="flag">🌍</span>
+          <span class="mode-label">Rohingya → English</span>
+        </button>
+      </div>
+      <div class="badge-pill">
+        <span class="badge-dot"></span>
+        <span id="srStatusLabel">Speech recognition: idle</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Left: Camera + captions -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <div class="panel-title">Live camera & captions</div>
+          <div class="panel-subtitle">Your face and voice never leave this browser. Backend only sees text.</div>
+        </div>
+        <div class="status-row">
+          <span class="status-dot" id="cameraDot"></span>
+          <span id="cameraStatus">Camera: initializing…</span>
+        </div>
+      </div>
+
+      <div class="video-shell">
+        <video id="video" autoplay playsinline muted></video>
+        <div class="video-overlay"></div>
+        <div class="video-glass"></div>
+        <div class="video-badge">
+          <span class="video-badge-pill">Live</span>
+          <span>Mic + Camera active</span>
+        </div>
+        <div class="controls">
+          <button class="icon-btn primary" id="micToggleBtn" title="Start / stop listening">
+            🎙
+          </button>
+          <button class="icon-btn" id="cameraRetryBtn" title="Retry camera">
+            ⟳
+          </button>
+        </div>
+      </div>
+
+      <div class="captions">
+        <div class="caption-label-row">
+          <div>
+            <span class="caption-label-main" id="captionTitle">Captions</span>
+          </div>
+          <div id="captionHint">Speak in English. Bottom line is Rohingya transliteration.</div>
+        </div>
+        <div class="caption-pair">
+          <div class="caption-line" id="sourceCaption">
+            <span class="caption-placeholder">Waiting for speech…</span>
+          </div>
+          <div class="caption-line muted" id="targetCaption">
+            <span class="caption-placeholder">Translated text will appear here.</span>
+          </div>
+        </div>
+        <div class="gemini-status">
+          <div>
+            <span class="em" id="backendStatusText">Backend: checking…</span>
+          </div>
+          <div class="gemini-status-right">
+            <div class="gemini-pill">
+              <span class="spinner" id="geminiSpinner" style="display:none;"></span>
+              FastAPI • gemini-2.5-flash
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Suggested dialogues -->
+    <div class="panel suggestions-panel">
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <div class="panel-title">Suggested next phrases</div>
+          <div class="panel-subtitle">
+            Based on the conversation so far. Click a card to hear it.
+          </div>
+        </div>
+        <div class="status-row">
+          <span class="status-dot" id="suggestionsDot"></span>
+          <span id="suggestionsStatus">Suggestions update after each turn.</span>
+        </div>
+      </div>
+
+      <div class="suggestion-list" id="suggestionList">
+        <div class="suggestion-empty">
+          <strong>No suggestions yet.</strong><br />
+          Start speaking and, after each translated segment, the backend will propose a few useful responses in both English and Rohingya (Latin script).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>
+      Backend must be running on <code>http://localhost:8000</code>. Configure your Gemini API key there.
+    </div>
+    <div>
+      Uses <span style="color:#e5e7eb;font-weight:500;">SpeechRecognition</span> in Chrome/Edge and
+      <span style="color:#e5e7eb;font-weight:500;">speechSynthesis</span> to read out replies.
+    </div>
+  </div>
+
+  <!-- Debug bar — remove once working -->
+  <div id="debugBar" style="
+    margin-top:10px;
+    padding:10px 12px;
+    border-radius:10px;
+    background:rgba(0,0,0,0.6);
+    border:1px solid rgba(148,163,184,0.3);
+    font-size:11px;
+    color:#94a3b8;
+    font-family:monospace;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  ">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <strong style="color:#e2e8f0;">SR Debug:</strong>
+      <span id="dbgSR">waiting…</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <strong style="color:#e2e8f0;">Mic level:</strong>
+      <div style="flex:1;min-width:120px;max-width:300px;height:10px;background:#1e293b;border-radius:999px;overflow:hidden;">
+        <div id="micLevelBar" style="height:100%;width:0%;background:linear-gradient(90deg,#22d3ee,#a855f7);border-radius:999px;transition:width 0.05s;"></div>
+      </div>
+      <span id="micLevelText" style="min-width:80px;">not started</span>
+      <button id="testMicBtn" style="
+        padding:3px 10px;font-size:11px;border-radius:999px;
+        border:1px solid rgba(148,163,184,0.5);background:rgba(15,23,42,0.9);
+        color:#e2e8f0;cursor:pointer;">▶ Test mic</button>
+      <button id="stopMicTestBtn" style="
+        padding:3px 10px;font-size:11px;border-radius:999px;
+        border:1px solid rgba(148,163,184,0.5);background:rgba(15,23,42,0.9);
+        color:#e2e8f0;cursor:pointer;display:none;">■ Stop test</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  "use strict";
+  // ====== Configuration ======
+  const BACKEND_BASE = "http://localhost:8000";
+
+  // ====== DOM ======
+  const videoEl             = document.getElementById("video");
+  const cameraStatusEl      = document.getElementById("cameraStatus");
+  const cameraDotEl         = document.getElementById("cameraDot");
+  const micToggleBtn        = document.getElementById("micToggleBtn");
+  const cameraRetryBtn      = document.getElementById("cameraRetryBtn");
+  const modeToggleEl        = document.getElementById("modeToggle");
+  const srStatusLabel       = document.getElementById("srStatusLabel");
+  const captionTitleEl      = document.getElementById("captionTitle");
+  const captionHintEl       = document.getElementById("captionHint");
+  const sourceCaptionEl     = document.getElementById("sourceCaption");
+  const targetCaptionEl     = document.getElementById("targetCaption");
+  const backendStatusTextEl = document.getElementById("backendStatusText");
+  const geminiSpinnerEl     = document.getElementById("geminiSpinner");
+  const suggestionListEl    = document.getElementById("suggestionList");
+  const suggestionsDotEl    = document.getElementById("suggestionsDot");
+  const suggestionsStatusEl = document.getElementById("suggestionsStatus");
+  const dbgEl               = document.getElementById("dbgSR");
+
+  // ====== State ======
+  let currentMode        = "english";
+  let conversationHistory = [];
+
+  // ====== Debug helper ======
+  const dbgLog = [];
+  function dbg(msg) {
+    const line = new Date().toLocaleTimeString() + " — " + msg;
+    console.log("[SR]", msg);
+    dbgLog.push(line);
+    if (dbgLog.length > 6) dbgLog.shift();
+    if (dbgEl) dbgEl.innerHTML = dbgLog.map(l => {
+      const colour = l.includes("onerror") ? "#f97373"
+                   : l.includes("heard")   ? "#86efac"
+                   : l.includes("onstart") ? "#67e8f9"
+                   : l.includes("sending") ? "#c4b5fd"
+                   : "#94a3b8";
+      return `<span style="color:${colour}">${l}</span>`;
+    }).join("<br>");
+  }
+
+  // ====== UI helpers ======
+  function setCameraStatus(ok, msg) {
+    cameraStatusEl.textContent = msg;
+    cameraDotEl.classList.toggle("error", !ok);
+  }
+
+  function setBackendBusy(busy, label) {
+    geminiSpinnerEl.style.display = busy ? "inline-block" : "none";
+    backendStatusTextEl.textContent = label || (busy ? "Translating…" : "Backend ready.");
+  }
+
+  function setSuggestionsBusy(busy, label) {
+    suggestionsStatusEl.textContent = label || (busy ? "Fetching phrases…" : "Updated.");
+  }
+
+  function showBackendError(msg) {
+    backendStatusTextEl.classList.add("error-text");
+    backendStatusTextEl.textContent = msg;
+    setTimeout(() => {
+      backendStatusTextEl.classList.remove("error-text");
+      backendStatusTextEl.textContent = "Backend ready.";
+    }, 6000);
+  }
+
+  function renderCaptions(src, tgt) {
+    sourceCaptionEl.textContent = src || "—";
+    targetCaptionEl.textContent = tgt || "—";
+    targetCaptionEl.classList.toggle("muted", !tgt);
+  }
+
+  function clearSuggestions() {
+    suggestionListEl.innerHTML =
+      '<div class="suggestion-empty"><strong>No suggestions yet.</strong><br/>Start speaking — after each translation Gemini will suggest replies.</div>';
+  }
+
+  function renderSuggestions(items) {
+    if (!items || !items.length) { clearSuggestions(); return; }
+    suggestionListEl.innerHTML = items.map((item, i) => `
+      <div class="suggestion-card"
+           data-en="${encodeURIComponent(item.english || "")}"
+           data-ro="${encodeURIComponent(item.rohingya || "")}">
+        <div class="suggestion-header-row">
+          <div class="suggestion-chip">Suggestion ${i + 1}</div>
+          <div>Click to speak</div>
+        </div>
+        <div class="suggestion-body">${item.english || "—"}</div>
+        <div class="suggestion-ro">${item.rohingya || ""}</div>
+        <div class="suggestion-footer">
+          <div class="pill-soft"><span class="pill-soft-dot"></span><span>EN + Rohingya Latin</span></div>
+        </div>
+      </div>`).join("");
+
+    suggestionListEl.querySelectorAll(".suggestion-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const text = decodeURIComponent(card.dataset.en || card.dataset.ro || "");
+        if (!text || !window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-US";
+        window.speechSynthesis.speak(u);
+      });
+    });
+  }
+
+  function updateModeUI() {
+    modeToggleEl.querySelectorAll(".mode-btn").forEach(b =>
+      b.classList.toggle("active", b.dataset.mode === currentMode));
+    if (currentMode === "english") {
+      captionTitleEl.textContent = "Speak English → Rohingya";
+      captionHintEl.textContent  = "Top: your English. Bottom: Rohingya (Latin script).";
+    } else {
+      captionTitleEl.textContent = "Speak Rohingya → English";
+      captionHintEl.textContent  = "Top: your Rohingya (Latin). Bottom: English meaning.";
+    }
+  }
+
+  // ====== Backend calls ======
+  async function backendTranslate(text, mode) {
+    const res = await fetch(BACKEND_BASE + "/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, mode }),
+    });
+    if (!res.ok) throw new Error("Translate " + res.status);
+    return (await res.json()).translation || "";
+  }
+
+  async function backendSuggest() {
+    if (!conversationHistory.length) return [];
+    const res = await fetch(BACKEND_BASE + "/api/suggest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        history: conversationHistory.map(({ mode, source, target }) => ({ mode, source, target })),
+        mode: currentMode,
+      }),
+    });
+    if (!res.ok) throw new Error("Suggest " + res.status);
+    return (await res.json()).suggestions || [];
+  }
+
+  async function checkBackendHealth() {
+    try {
+      const res  = await fetch(BACKEND_BASE + "/health");
+      const data = await res.json();
+      backendStatusTextEl.textContent = data.has_api_key
+        ? "Backend ready — " + (data.model || "gemini")
+        : "Backend up but GEMINI_API_KEY missing!";
+    } catch (_) {
+      backendStatusTextEl.textContent = "Cannot reach backend on :8000";
+    }
+  }
+
+  async function processSpokenText(text) {
+    if (!text) return;
+    try {
+      setBackendBusy(true, "Translating…");
+      const translation = await backendTranslate(text, currentMode);
+      renderCaptions(text, translation);
+      conversationHistory.push({ mode: currentMode, source: text, target: translation });
+      if (conversationHistory.length > 12) conversationHistory = conversationHistory.slice(-12);
+      setBackendBusy(false, "Translation ready.");
+
+      setSuggestionsBusy(true, "Getting suggestions…");
+      renderSuggestions(await backendSuggest());
+      setSuggestionsBusy(false, "Suggestions ready.");
+    } catch (err) {
+      console.error(err);
+      showBackendError("Backend error — is it running on :8000?");
+      setBackendBusy(false);
+    }
+  }
+
+  // ====== Camera ======
+  async function startCamera() {
+    setCameraStatus(true, "Camera: requesting…");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      videoEl.srcObject = stream;
+      setCameraStatus(true, "Camera: live");
+    } catch (err) {
+      setCameraStatus(false, "Camera blocked: " + err.message);
+      dbg("camera error: " + err.message);
+    }
+  }
+  cameraRetryBtn.addEventListener("click", startCamera);
+
+  // ====== Speech Recognition ======
+  // Uses continuous=true so Chrome never auto-stops.
+  // ====== Audio recording via MediaRecorder → backend → Gemini ======
+  // No dependency on Chrome's Web Speech API (which requires Google's servers).
+  // We record raw audio, POST it to the backend, Gemini transcribes + translates it.
+
+  let isListening    = false;
+  let mediaRecorder  = null;
+  let audioChunks    = [];
+  let recStream      = null;
+
+  function setMicUI(on) {
+    micToggleBtn.textContent  = on ? "⏹" : "🎙";
+    micToggleBtn.title        = on ? "Stop & translate" : "Start recording";
+    srStatusLabel.textContent = on
+      ? "Recording — click ⏹ to stop & translate"
+      : "Idle — click 🎙 to start";
+  }
+
+  async function micStart() {
+    // Release any active mic-test stream first
+    if (micTestAnim)   { cancelAnimationFrame(micTestAnim); micTestAnim = null; }
+    if (micTestStream) { micTestStream.getTracks().forEach(t => t.stop()); micTestStream = null; }
+    stopMicTest.style.display = "none";
+    testMicBtn.style.display  = "inline-block";
+    micLevelBar.style.width   = "0%";
+    micLevelText.textContent  = "stopped";
+
+    try {
+      recStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    } catch (err) {
+      srStatusLabel.textContent = "Mic blocked: " + err.message;
+      dbg("getUserMedia error: " + err.message);
+      return;
+    }
+
+    // Pick the best supported mimeType
+    const mime = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/ogg"]
+      .find(t => MediaRecorder.isTypeSupported(t)) || "";
+
+    mediaRecorder = new MediaRecorder(recStream, mime ? { mimeType: mime } : {});
+    audioChunks   = [];
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data && e.data.size > 0) audioChunks.push(e.data);
+    };
+
+    mediaRecorder.start(250); // collect a chunk every 250ms
+    isListening = true;
+    setMicUI(true);
+    sourceCaptionEl.textContent = "Recording… speak now, then click ⏹ to translate";
+    dbg("MediaRecorder started — mime: " + (mime || "browser default"));
+  }
+
+  async function micStop() {
+    if (!mediaRecorder || !isListening) return;
+    isListening = false;
+    setMicUI(false);
+    sourceCaptionEl.textContent = "Processing audio…";
+    dbg("recording stopped — sending to Gemini…");
+
+    mediaRecorder.onstop = async () => {
+      const mimeType = mediaRecorder.mimeType || "audio/webm";
+      const blob     = new Blob(audioChunks, { type: mimeType });
+      audioChunks    = [];
+      if (recStream) { recStream.getTracks().forEach(t => t.stop()); recStream = null; }
+
+      const kb = (blob.size / 1024).toFixed(1);
+      dbg("audio blob: " + kb + " KB — uploading…");
+
+      if (blob.size < 1000) {
+        sourceCaptionEl.textContent = "Recording too short — hold 🎙 for at least 1 second";
+        setBackendBusy(false);
+        dbg("blob too small (" + kb + " KB), skipping");
+        return;
+      }
+
+      const form = new FormData();
+      form.append("file", blob, "recording.webm");
+      form.append("mode", currentMode);
+
+      // 45s hard timeout — backend also times out Gemini at 25s
+      const abort = new AbortController();
+      const timeoutMs = 45000;
+      const timer = setTimeout(() => {
+        abort.abort();
+        dbg("request timed out after 45s");
+      }, timeoutMs);
+
+      // After 8s, show that we're still waiting (avoids "stuck" feeling)
+      const progressMsg = setTimeout(() => {
+        setBackendBusy(true, "Still waiting for Gemini…");
+        sourceCaptionEl.textContent = "⏳ Gemini is transcribing… (this can take 10–25s)";
+      }, 8000);
+
+      try {
+        setBackendBusy(true, "Uploading (" + kb + " KB)…");
+        sourceCaptionEl.textContent = "⏳ Sending audio to backend…";
+        targetCaptionEl.textContent = "Translation will appear here once Gemini responds";
+
+        const res = await fetch(BACKEND_BASE + "/api/transcribe", {
+          method: "POST",
+          body: form,
+          signal: abort.signal,
+        });
+        clearTimeout(timer);
+        clearTimeout(progressMsg);
+
+        if (!res.ok) {
+          const body = await res.text().catch(() => "");
+          if (res.status === 504) {
+            throw new Error("Gemini took too long (backend timeout). Try a shorter recording.");
+          }
+          if (res.status === 413) {
+            throw new Error("Recording too large — please record under 3 minutes.");
+          }
+          throw new Error("Backend " + res.status + (body ? ": " + body.slice(0, 100) : ""));
+        }
+
+        setBackendBusy(true, "Parsing Gemini response…");
+        const data = await res.json();
+
+        const transcript  = (data.transcript  || "").trim();
+        const translation = (data.translation || "").trim();
+
+        // Show the detected speech immediately, clearly labelled
+        if (!transcript) {
+          sourceCaptionEl.textContent = "Gemini could not make out any speech — try again";
+          targetCaptionEl.textContent = "—";
+          setBackendBusy(false, "No transcript.");
+          dbg("empty transcript from Gemini");
+          return;
+        }
+
+        dbg("transcript: " + transcript);
+
+        // Step 1 — show what was heard right away
+        sourceCaptionEl.textContent = transcript;
+        targetCaptionEl.textContent = translation
+          ? translation
+          : "⏳ Waiting for translation…";
+        setBackendBusy(false, translation ? "Translation ready." : "Transcript ready.");
+
+        conversationHistory.push({ mode: currentMode, source: transcript, target: translation });
+        if (conversationHistory.length > 12) conversationHistory = conversationHistory.slice(-12);
+
+        if (translation) {
+          setSuggestionsBusy(true, "Getting suggestions…");
+          renderSuggestions(await backendSuggest());
+          setSuggestionsBusy(false, "Suggestions ready.");
+        }
+      } catch (err) {
+        clearTimeout(timer);
+        clearTimeout(progressMsg);
+        console.error(err);
+        const msg = err.message || "";
+        if (err.name === "AbortError") {
+          showBackendError("Request timed out (45s). Is the backend running? Try a shorter recording.");
+          sourceCaptionEl.textContent = "Timed out — try again with a shorter clip";
+        } else if (msg === "Failed to fetch" || msg.includes("Load failed") || msg.includes("NetworkError")) {
+          showBackendError("Cannot reach backend at " + BACKEND_BASE + ". Is it running? (uvicorn on port 8000)");
+          sourceCaptionEl.textContent = "Backend unreachable — start: cd backend && uvicorn main:app --reload --port 8000";
+        } else {
+          showBackendError(msg);
+          sourceCaptionEl.textContent = "Error: " + msg;
+        }
+        setBackendBusy(false);
+        dbg("error: " + msg);
+      }
+    };
+
+    try { mediaRecorder.stop(); } catch (_) {}
+  }
+
+  micToggleBtn.addEventListener("click", () => {
+    if (!isListening) micStart(); else micStop();
+  });
+
+  // ====== Mode toggle ======
+  modeToggleEl.addEventListener("click", (e) => {
+    const btn = e.target.closest(".mode-btn");
+    if (!btn || btn.dataset.mode === currentMode) return;
+    currentMode = btn.dataset.mode;
+    updateModeUI();
+    renderCaptions("", "");
+  });
+
+  // ====== Mic level meter (diagnostic) ======
+  const micLevelBar  = document.getElementById("micLevelBar");
+  const micLevelText = document.getElementById("micLevelText");
+  const testMicBtn   = document.getElementById("testMicBtn");
+  const stopMicTest  = document.getElementById("stopMicTestBtn");
+  let micTestStream  = null;
+  let micTestAnim    = null;
+
+  testMicBtn.addEventListener("click", async () => {
+    try {
+      micTestStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      const ctx = new AudioContext();
+      const src = ctx.createMediaStreamSource(micTestStream);
+      const anal = ctx.createAnalyser();
+      anal.fftSize = 256;
+      src.connect(anal);
+      const buf = new Uint8Array(anal.frequencyBinCount);
+      testMicBtn.style.display  = "none";
+      stopMicTest.style.display = "inline-block";
+      micLevelText.textContent  = "listening…";
+      function tick() {
+        anal.getByteFrequencyData(buf);
+        const avg = buf.reduce((a, b) => a + b, 0) / buf.length;
+        const pct = Math.min(100, avg * 3).toFixed(0);
+        micLevelBar.style.width  = pct + "%";
+        micLevelText.textContent = pct > 5 ? "AUDIO OK (" + pct + "%)" : "silence (" + pct + "%)";
+        micTestAnim = requestAnimationFrame(tick);
+      }
+      tick();
+    } catch (err) {
+      micLevelText.textContent = "ERROR: " + err.message;
+    }
+  });
+
+  stopMicTest.addEventListener("click", () => {
+    if (micTestAnim)   cancelAnimationFrame(micTestAnim);
+    if (micTestStream) micTestStream.getTracks().forEach(t => t.stop());
+    micTestStream = null; micTestAnim = null;
+    micLevelBar.style.width   = "0%";
+    micLevelText.textContent  = "stopped";
+    testMicBtn.style.display  = "inline-block";
+    stopMicTest.style.display = "none";
+  });
+
+  // ====== Boot ======
+  updateModeUI();
+  startCamera();
+  clearSuggestions();
+  checkBackendHealth();
+  dbg("page loaded — waiting for mic");
+</script>
+</body>
+</html>
+
