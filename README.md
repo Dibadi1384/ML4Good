@@ -26,6 +26,12 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+The backend needs `python-multipart` for the audio upload endpoint. If you see *"Form data requires python-multipart"*, run:
+
+```bash
+pip install python-multipart
+```
+
 Create a `.env` file (you can copy `.env.example`):
 
 ```bash
@@ -36,7 +42,7 @@ Edit `.env` and set:
 
 ```bash
 GEMINI_API_KEY=your_real_key_here
-GEMINI_MODEL=gemini-1.5-flash
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 ## 3. Run the backend
@@ -59,7 +65,7 @@ curl http://localhost:8000/health
 You should get JSON like:
 
 ```json
-{ "status": "ok", "model": "gemini-1.5-flash", "has_api_key": true }
+{ "status": "ok", "model": "gemini-2.5-flash", "has_api_key": true }
 ```
 
 ## 4. Run the frontend
